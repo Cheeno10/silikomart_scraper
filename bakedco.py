@@ -8,18 +8,20 @@ headers = {
 }
 
 
-r = requests.get('https://www.bakedeco.com/nav/brand.asp?manufacid=551', headers=headers)
+r = requests.get('https://www.bakedeco.com/nav/brand.asp?pagestart=1&categoryID=0&price=0&manufacid=551&sortby=&clearance=0&va=1', headers=headers)
 soup = BeautifulSoup(r.content, 'lxml')
 
 productlist = soup.find_all('div', class_='product')
 
-productlinks = []
+productlinks = set()
 
-for item in productlist:
-    for link in item.find_all('a', href=True):
-        href = link['href']
-        if 'detail.asp' in href:
-            productlinks.append(baseurl + href)
+for item in soup.find_all("div", class_="prd_list_mid"):
+    for link in item.find_all("a", href=True):
+        href = link["href"]
+        if "detail.asp" in href:
+            full_link = href
+            productlinks.add(full_link)
+            print(full_link)
 
 print((len(productlinks)))
 
