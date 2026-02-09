@@ -8,19 +8,22 @@ headers = {
 }
 
 
+# Wrong url, can't scrape all product links
 r = requests.get('https://www.bakedeco.com/nav/brand.asp?pagestart=1&categoryID=0&price=0&manufacid=551&sortby=&clearance=0&va=1', headers=headers)
 soup = BeautifulSoup(r.content, 'lxml')
 
 productlist = soup.find_all('div', class_='product')
 
+# Set to set to store unique product links
 productlinks = set()
 
+# Added specification to find product links within the correct div (prd_list_mid)
 for item in soup.find_all("div", class_="prd_list_mid"):
     for link in item.find_all("a", href=True):
         href = link["href"]
-        if "detail.asp" in href:
+        if "detail.asp" in href:        # Limit to details.asp links to avoid irrelevant links
             full_link = href
-            productlinks.add(full_link)
+            productlinks.add(full_link) # Ensure no duplicates
             print(full_link)
 
 print((len(productlinks)))
